@@ -7,7 +7,13 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
+            "name": "Mở Portfolio (Local File)",
+            "file": "${workspaceFolder}/index.html"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Mở Portfolio (Localhost 8080)",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}"
         }

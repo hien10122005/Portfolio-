@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Portfolio | hien10122005 - Software Developer</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Elite Portfolio | hien10122005 - Software Engineer</title>
+    
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Outfit & Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <script>
@@ -19,24 +17,13 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        outfit: ['Outfit', 'sans-serif'],
+                        display: ['Bricolage Grotesque', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#6366f1',
-                        secondary: '#06b6d4',
+                        onyx: '#09090b',
+                        ghost: '#fafafa',
                         accent: '#a855f7',
-                        dark: '#020617',
-                    },
-                    animation: {
-                        'spin-slow': 'spin 8s linear infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 3s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        }
+                        nebula: '#6366f1',
                     }
                 }
             }
@@ -44,397 +31,427 @@
     </script>
 
     <style>
+        :root {
+            --cursor-x: 0px;
+            --cursor-y: 0px;
+        }
         body {
-            font-family: 'Inter', sans-serif;
-            background: #020617;
-            cursor: none; /* Custom cursor */
+            background-color: #09090b;
+            color: #fafafa;
+            overflow-x: hidden;
+            cursor: none;
         }
-        .bg-mesh {
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.15) 0%, transparent 50%);
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.4;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: minmax(180px, auto);
+            gap: 1.5rem;
         }
-        .glow-border {
+        .bento-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 2rem;
+            padding: 2rem;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
+            overflow: hidden;
         }
-        .glow-border::after {
+        .bento-item::before {
             content: '';
             position: absolute;
-            inset: -1px;
-            background: linear-gradient(45deg, #6366f1, #a855f7, #06b6d4);
-            border-radius: inherit;
-            z-index: -1;
+            inset: 0;
+            background: radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(255,255,255,0.06) 0%, transparent 40%);
             opacity: 0;
-            transition: opacity 0.3s ease;
-            filter: blur(5px);
+            transition: opacity 0.3s;
         }
-        .project-card:hover .glow-border::after {
-            opacity: 0.5;
+        .bento-item:hover::before { opacity: 1; }
+        .bento-item:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
         }
-        .gradient-text {
-            background: linear-gradient(to right, #818cf8, #c084fc, #22d3ee);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .glass-nav {
+            background: rgba(9, 9, 11, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        /* Custom Cursor */
-        #cursor-dot {
-            width: 8px;
-            height: 8px;
+        #custom-cursor {
+            width: 20px;
+            height: 20px;
             background: white;
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
-            z-index: 1000;
-        }
-        #cursor-glow {
-            width: 40px;
-            height: 40px;
-            background: rgba(99, 102, 241, 0.3);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 999;
-            filter: blur(15px);
+            z-index: 9999;
+            mix-blend-mode: difference;
             transition: transform 0.1s ease-out;
         }
+        .text-reveal {
+            animation: text-reveal 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        @keyframes text-reveal {
+            0% { transform: translateY(100%); filter: blur(10px); opacity: 0; }
+            100% { transform: translateY(0); filter: blur(0); opacity: 1; }
+        }
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent);
+        }
+        .journey-card:nth-child(even) { flex-direction: row-reverse; text-align: right; }
         
-        /* Hide scrollbar but keep functionality */
-        ::-webkit-scrollbar {
-            width: 6px;
+        /* Bento Sizes */
+        .col-span-2 { grid-column: span 2; }
+        .row-span-2 { grid-row: span 2; }
+
+        @media (max-width: 1024px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .timeline-line { left: 20px; }
+            .journey-card { flex-direction: row !important; text-align: left !important; padding-left: 50px; }
         }
-        ::-webkit-scrollbar-track {
-            background: #020617;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e1b4b;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #312e81;
+        @media (max-width: 640px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .col-span-2, .row-span-2 { grid-column: span 1; grid-row: span 1; }
         }
     </style>
 </head>
-<body class="text-slate-200 antialiased overflow-x-hidden bg-mesh">
+<body class="antialiased">
 
     <!-- Custom Cursor -->
-    <div id="cursor-dot"></div>
-    <div id="cursor-glow"></div>
+    <div id="custom-cursor"></div>
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5 px-6 md:px-12 py-4 flex justify-between items-center transition-all duration-300" id="navbar">
-        <div class="text-2xl font-outfit font-bold gradient-text tracking-tighter">hien.dev</div>
-        <div class="hidden md:flex gap-10 items-center text-xs font-bold uppercase tracking-widest text-slate-400">
+    <!-- Background Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-[100] glass-nav py-5 px-8 md:px-16 flex justify-between items-center">
+        <div class="text-xl font-display font-black tracking-tighter flex items-center gap-2">
+            <span class="w-8 h-8 bg-white text-onyx rounded-full flex items-center justify-center text-xs">H</span>
+            hien.dev
+        </div>
+        <div class="hidden md:flex gap-10 items-center text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
             <a href="#home" class="hover:text-white transition">Hồ sơ</a>
-            <a href="#skills" class="hover:text-white transition">Kỹ năng</a>
+            <a href="#about" class="hover:text-white transition">Kỹ năng</a>
             <a href="#projects" class="hover:text-white transition">Dự án</a>
-            <a href="#academics" class="hover:text-white transition">Học tập</a>
-            <a href="https://github.com/hien10122005" target="_blank" class="bg-white/5 hover:bg-white/10 px-5 py-2.5 rounded-full border border-white/10 transition flex items-center gap-2">
-                <i class="fab fa-github"></i>
+            <a href="https://github.com/hien10122005" target="_blank" class="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/5 transition">
+                <i class="fab fa-github text-sm"></i>
             </a>
         </div>
-        <button class="md:hidden glass p-2 rounded-lg">
-            <i class="fas fa-bars"></i>
+        <button class="md:hidden w-10 h-10 border border-white/10 rounded-full flex items-center justify-center">
+            <i class="fas fa-bars text-xs"></i>
         </button>
     </nav>
 
-    <!-- Main Content -->
-    <main>
-        
+    <main class="relative z-10">
+
         <!-- Hero Section -->
-        <section id="home" class="min-h-screen flex flex-col items-center justify-center pt-24 px-6 text-center">
-            <div data-aos="zoom-in" class="relative group cursor-pointer mb-12">
-                <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 rounded-full opacity-25 group-hover:opacity-75 blur transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                <div class="relative w-48 h-48 md:w-56 md:h-56 rounded-full p-1 bg-slate-900 overflow-hidden shadow-2xl">
-                    <img src="avatar.png" alt="Profile" class="w-full h-full object-cover rounded-full transition duration-700 group-hover:scale-105" onerror="this.src='https://ui-avatars.com/api/?name=hien10122005&background=6366f1&color=fff&size=512'">
+        <section id="home" class="min-h-screen flex flex-col justify-center px-8 md:px-24">
+            <div data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 mb-8">
+                    <span class="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-white/70">Sẵn sàng cộng tác & Phát triển</span>
                 </div>
-                <div class="absolute bottom-4 -right-2 bg-indigo-600 border border-indigo-400/50 px-3 py-1 rounded-lg text-[10px] font-bold text-white shadow-xl">
-                    <i class="fas fa-code mr-1"></i> Developer
+                <div class="overflow-hidden">
+                    <h1 class="text-6xl md:text-[120px] font-display font-extrabold leading-[0.9] tracking-tighter mb-8 text-reveal">
+                        Lập trình viên <br>
+                        <span class="text-white/20">Thế hệ AI</span>
+                    </h1>
                 </div>
-            </div>
-
-            <div class="max-w-4xl" data-aos="fade-up" data-aos-delay="200">
-                <p class="text-indigo-400 font-bold uppercase tracking-[0.3em] text-xs mb-4">Lập trình viên & GenAI Enthusiast</p>
-                <h1 class="text-5xl md:text-7xl font-outfit font-extrabold mb-6 tracking-tight leading-tight">
-                    Chào, tôi là <span class="gradient-text">hien10122005</span>
-                </h1>
-                <h2 class="text-lg md:text-2xl font-medium text-slate-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-                    Sinh viên <span class="text-white font-semibold">Công nghệ thông tin</span> tại Đại học Nam Cần Thơ (DNC). 
-                    Chuyên môn về kiến trúc Web/Mobile hiện đại và tối ưu hóa workflow bằng AI.
-                </h2>
-                <div class="flex flex-wrap justify-center gap-5">
-                    <a href="#projects" class="group relative px-8 py-4 bg-indigo-600 rounded-full font-bold transition overflow-hidden">
-                        <span class="relative z-10">Khám Phá Dự Án</span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                <p class="max-w-2xl text-lg md:text-2xl text-white/50 leading-relaxed font-light mb-12" data-aos="fade-up" data-aos-delay="200">
+                    Tôi là <span class="text-white font-medium italic">hien10122005</span>, sinh viên CNTT tại DNC. 
+                    Tôi không chỉ viết code, tôi kiến tạo giá trị bằng sự kết hợp giữa tư duy truyền thống và công nghệ Generative AI.
+                </p>
+                <div class="flex flex-wrap gap-6" data-aos="fade-up" data-aos-delay="400">
+                    <a href="#projects" class="px-10 py-5 bg-white text-onyx rounded-full font-bold text-sm hover:scale-105 transition active:scale-95 duration-300">
+                        Xem Các Dự Án
                     </a>
-                    <button class="glass px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:bg-white/10 transition">
-                        <i class="fas fa-file-download text-indigo-400"></i> Download CV (PDF)
-                    </button>
+                    <a href="#about" class="px-10 py-5 border border-white/10 rounded-full font-bold text-sm hover:bg-white/5 transition duration-300 flex items-center gap-2">
+                        Về Tôi <i class="fas fa-arrow-right text-[10px] -rotate-45"></i>
+                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- Skills Section -->
-        <section id="skills" class="py-24 px-6 md:px-12 bg-slate-900/30">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-20" data-aos="fade-up">
-                    <h3 class="text-accent font-bold uppercase tracking-widest text-sm mb-2">My Tech Stack</h3>
-                    <h2 class="text-4xl md:text-5xl font-outfit font-extrabold mb-6">Kỹ Năng Chuyên Môn</h2>
-                    <div class="w-24 h-1 bg-gradient-to-r from-indigo-500 to-cyan-500 mx-auto rounded-full"></div>
+        <!-- Bento Section (Skills & Info) -->
+        <section id="about" class="py-24 px-8 md:px-24">
+            <div class="bento-grid">
+                
+                <!-- Main Intro -->
+                <div class="bento-item col-span-2 row-span-2 flex flex-col justify-between" data-aos="fade-up">
+                    <div>
+                        <h3 class="text-3xl font-display font-bold mb-6">Xác định lại khả năng lập trình với AI.</h3>
+                        <p class="text-white/40 leading-relaxed font-light">
+                            Tầm nhìn của tôi là tận dụng sức mạnh của các mô hình ngôn ngữ lớn (LLMs) để tăng tốc độ phát triển ứng dụng lên gấp 10 lần mà không làm giảm chất lượng.
+                        </p>
+                    </div>
+                    <div class="flex items-end justify-between">
+                        <div class="relative w-24 h-24 rounded-full overflow-hidden border border-white/10">
+                            <img src="avatar.png" alt="Avatar" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700" onerror="this.src='https://ui-avatars.com/api/?name=H&background=333&color=fff'">
+                        </div>
+                        <div class="text-right">
+                            <div class="text-4xl font-display font-black">5+</div>
+                            <div class="text-[10px] uppercase font-bold text-white/30 tracking-widest">Dự án thực tế</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    
-                    <!-- Frontend -->
-                    <div class="glass p-8 rounded-3xl group hover:border-indigo-500/50 transition-all duration-500" data-aos="fade-up">
-                        <div class="w-12 h-12 bg-indigo-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-layer-group text-indigo-400 text-xl"></i>
+                <!-- Skill: Frontend -->
+                <div class="bento-item flex flex-col justify-between" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fab fa-react text-2xl text-blue-400"></i>
+                    <div>
+                        <h4 class="font-bold mb-1">Modern Web</h4>
+                        <p class="text-[11px] text-white/30 lowercase">Next.js • TypeScript • Tailwind</p>
+                    </div>
+                </div>
+
+                <!-- Skill: AI Toolbelt -->
+                <div class="bento-item flex flex-col justify-between border-purple-500/20" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-brain text-2xl text-purple-400"></i>
+                    <div>
+                        <h4 class="font-bold mb-1">AI Workflow</h4>
+                        <p class="text-[11px] text-white/30 lowercase">Gemini • Anthropic • Prompting</p>
+                    </div>
+                </div>
+
+                <!-- GitHub Status -->
+                <div class="bento-item col-span-2 flex items-center justify-between" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center gap-6">
+                        <i class="fab fa-github text-4xl opacity-10"></i>
+                        <div>
+                            <h4 class="font-bold">hien10122005</h4>
+                            <p class="text-[11px] text-white/30 uppercase tracking-widest">GitHub Active Developer</p>
                         </div>
-                        <h4 class="text-xl font-bold mb-4">Frontend Dev</h4>
-                        <ul class="text-slate-400 space-y-3 text-sm">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500 text-[10px]"></i> Next.js (TypeScript)</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500 text-[10px]"></i> Tailwind CSS</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500 text-[10px]"></i> UI/UX Glassmorphism</li>
-                        </ul>
+                    </div>
+                    <a href="https://github.com/hien10122005" target="_blank" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-white text-onyx transition">
+                        <i class="fas fa-arrow-right -rotate-45"></i>
+                    </a>
+                </div>
+
+                <!-- Software Dev -->
+                <div class="bento-item" data-aos="fade-up" data-aos-delay="400">
+                    <i class="fas fa-desktop text-xl mb-4 text-emerald-400"></i>
+                    <h4 class="font-bold mb-2">Systems</h4>
+                    <p class="text-[11px] text-white/30 leading-relaxed">C# WinForms & Java chuyên sâu cho ứng dụng quản lý doanh nghiệp.</p>
+                </div>
+
+                <!-- DNC Student -->
+                <div class="bento-item flex flex-col justify-center text-center bg-white/5" data-aos="fade-up" data-aos-delay="500">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-white/20 mb-2">Đào tạo</h4>
+                    <p class="text-lg font-display font-bold">DNC University</p>
+                    <p class="text-[10px] text-white/40 italic">Nam Can Tho University</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Journey Section -->
+        <section class="py-24 px-8 md:px-24 bg-onyx/50 border-y border-white/5">
+            <div class="max-w-5xl mx-auto relative">
+                <div class="text-center mb-24">
+                    <h2 class="text-5xl font-display font-extrabold tracking-tighter">Hành Trình Học Tập</h2>
+                </div>
+                
+                <div class="timeline-line"></div>
+
+                <!-- Milestones -->
+                <div class="space-y-32">
+                    <div class="journey-card flex items-center gap-12 group" data-aos="fade-up">
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold text-white/30 uppercase tracking-widest mb-2">2023 - Bắt đầu</h4>
+                            <h3 class="text-2xl font-display font-bold mb-4">Cung đường Logic đầu tiên</h3>
+                            <p class="text-white/40 leading-relaxed font-light">Làm quen với C# và WinForms tại DNC. Xây dựng dự án **QuanLyDien** với niềm đam mê giải quyết các bài toán toán học trong lập trình.</p>
+                        </div>
+                        <div class="w-4 h-4 bg-white rounded-full group-hover:scale-150 transition duration-500 relative z-20 shadow-[0_0_20px_rgba(255,255,255,0.5)]"></div>
+                        <div class="flex-1 hidden md:block opacity-5">
+                            <i class="fas fa-terminal text-9xl"></i>
+                        </div>
                     </div>
 
-                    <!-- Software & Mobile -->
-                    <div class="glass p-8 rounded-3xl group hover:border-purple-500/50 transition-all duration-500" data-aos="fade-up" data-aos-delay="100">
-                        <div class="w-12 h-12 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-mobile-alt text-purple-400 text-xl"></i>
+                    <div class="journey-card flex items-center gap-12 group" data-aos="fade-up">
+                        <div class="flex-1 text-right">
+                            <h4 class="text-xs font-bold text-white/30 uppercase tracking-widest mb-2">2024 - Mở rộng</h4>
+                            <h3 class="text-2xl font-display font-bold mb-4">Đa nền tảng & Hệ thống</h3>
+                            <p class="text-white/40 leading-relaxed font-light">Phát triển các hệ thống quản lý Khách sạn và Bán hàng bằng **Java & Android Studio**. Hiểu sâu về cấu trúc dữ liệu và hướng đối tượng (OOP).</p>
                         </div>
-                        <h4 class="text-xl font-bold mb-4">Software & Mobile</h4>
-                        <ul class="text-slate-400 space-y-3 text-sm">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500 text-[10px]"></i> Java (Android Studio)</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500 text-[10px]"></i> C# WinForms</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500 text-[10px]"></i> Database Management</li>
-                        </ul>
+                        <div class="w-4 h-4 bg-white rounded-full group-hover:scale-150 transition duration-500 relative z-20 shadow-[0_0_20px_rgba(255,255,255,0.5)]"></div>
+                        <div class="flex-1 hidden md:block opacity-5">
+                            <i class="fas fa-database text-9xl"></i>
+                        </div>
                     </div>
 
-                    <!-- AI & Innovation -->
-                    <div class="glass p-8 rounded-3xl group hover:border-cyan-500/50 transition-all duration-500" data-aos="fade-up" data-aos-delay="200">
-                        <div class="w-12 h-12 bg-cyan-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-robot text-cyan-400 text-xl"></i>
+                    <div class="journey-card flex items-center gap-12 group" data-aos="fade-up">
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold text-white/30 uppercase tracking-widest mb-2">Hiện tại - Breakthrough</h4>
+                            <h3 class="text-2xl font-display font-bold mb-4">Sức mạnh của AI (GenAI)</h3>
+                            <p class="text-white/40 leading-relaxed font-light">Ưu tiên sử dụng **TypeScript & Next.js**. Áp dụng Gemini và các công cụ agentic AI để xây dựng dự án **hoc-trac-nghiem** với tốc độ vượt trội.</p>
                         </div>
-                        <h4 class="text-xl font-bold mb-4">GenAI Workflow</h4>
-                        <ul class="text-slate-400 space-y-3 text-sm">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-500 text-[10px]"></i> Prompt Engineering</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-500 text-[10px]"></i> AI Code Optimization</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-500 text-[10px]"></i> Antigravity/Gemini Tools</li>
-                        </ul>
-                    </div>
-
-                    <!-- Others -->
-                    <div class="glass p-8 rounded-3xl group hover:border-emerald-500/50 transition-all duration-500" data-aos="fade-up" data-aos-delay="300">
-                        <div class="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                            <i class="fas fa-tools text-emerald-400 text-xl"></i>
+                        <div class="w-4 h-4 bg-white rounded-full group-hover:scale-150 transition duration-500 relative z-20 shadow-[0_0_20px_rgba(255,255,255,0.5)]"></div>
+                        <div class="flex-1 hidden md:block opacity-5">
+                            <i class="fas fa-rocket text-9xl text-purple-500"></i>
                         </div>
-                        <h4 class="text-xl font-bold mb-4">Professional</h4>
-                        <ul class="text-slate-400 space-y-3 text-sm">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-[10px]"></i> Git / GitHub</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-[10px]"></i> Vercel Deployment</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-[10px]"></i> Agile Learning</li>
-                        </ul>
                     </div>
-
                 </div>
             </div>
         </section>
 
-        <!-- Projects Section -->
-        <section id="projects" class="py-24 px-6 md:px-12 relative overflow-hidden">
-            <!-- Decorative circle -->
-            <div class="absolute -right-24 top-0 w-96 h-96 bg-indigo-600/5 blur-[100px] rounded-full"></div>
+        <!-- Projects Grid -->
+        <section id="projects" class="py-32 px-8 md:px-24">
+            <div class="flex justify-between items-end mb-24">
+                <h2 class="text-6xl font-display font-extrabold tracking-tighter">Dự án <span class="text-white/10 italic">Nổi bật</span></h2>
+                <a href="https://github.com/hien10122005" target="_blank" class="text-xs font-bold uppercase tracking-widest border-b border-white/20 pb-2 hover:border-white transition">Tất cả dự án</a>
+            </div>
 
-            <div class="max-w-7xl mx-auto">
-                <div class="mb-16">
-                    <h3 class="text-indigo-500 font-bold uppercase tracking-widest text-sm mb-2">Featured Work</h3>
-                    <h2 class="text-4xl md:text-5xl font-outfit font-extrabold mb-4">Các Dự Án Tâm Huyết</h2>
-                    <p class="text-slate-400 max-w-2xl">
-                        Sự kết hợp giữa tư duy lập trình hệ thống và khả năng ứng dụng công nghệ AI vào giải quyết vấn đề thực tế.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    
-                    <!-- Project Case: hoc-trac-nghiem (SPECIAL) -->
-                    <a href="https://hoc-trac-nghiem.vercel.app/login" target="_blank" class="project-card group rounded-3xl overflow-hidden glass p-1 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl border-2 border-indigo-500/50" data-aos="fade-up">
-                        <div class="p-6">
-                            <div class="relative h-48 mb-6 rounded-2xl bg-gradient-to-br from-indigo-800 to-indigo-600 flex items-center justify-center overflow-hidden">
-                                <i class="fas fa-graduation-cap text-6xl text-white opacity-80 group-hover:scale-125 transition duration-700"></i>
-                                <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
-                                    <span class="bg-white text-dark px-6 py-2 rounded-full font-bold shadow-xl">Truy Cập Ngay <i class="fas fa-external-link-alt ml-2"></i></span>
-                                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                
+                <!-- Project: hoc-trac-nghiem -->
+                <div class="group cursor-pointer" data-aos="fade-up">
+                    <a href="https://hoc-trac-nghiem.vercel.app/login" target="_blank">
+                        <div class="aspect-video bg-white/5 rounded-[3rem] overflow-hidden border border-white/5 relative mb-8">
+                            <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                            <div class="absolute inset-0 flex items-center justify-center translate-y-10 group-hover:translate-y-0 transition duration-700">
+                                <i class="fas fa-graduation-cap text-[80px] text-white/10 group-hover:text-white/40 transition"></i>
                             </div>
-                            <div class="flex justify-between items-center mb-3">
-                                <h4 class="text-2xl font-bold gradient-text">hoc-trac-nghiem</h4>
-                                <span class="bg-indigo-500 text-white text-[10px] px-2 py-1 rounded font-bold">LIVE</span>
-                            </div>
-                            <p class="text-sm text-slate-400 mb-6 leading-relaxed">
-                                Nền tảng ôn tập và thi trắc nghiệm tiên tiến. Ứng dụng **TypeScript & Next.js** cho hiệu năng vượt trội và quản lý trạng thái phức tạp.
-                            </p>
-                            <div class="flex items-center gap-3 text-xs text-indigo-400 font-medium">
-                                <span class="px-3 py-1 glass rounded-lg">Next.js</span>
-                                <span class="px-3 py-1 glass rounded-lg">Firebase</span>
+                            <div class="absolute top-8 right-8 w-12 h-12 bg-white rounded-full flex items-center justify-center text-onyx scale-0 group-hover:scale-100 transition duration-500 delay-100">
+                                <i class="fas fa-arrow-right -rotate-45"></i>
                             </div>
                         </div>
                     </a>
-
-                    <!-- Project: WebBanHang & AppTapHoa -->
-                    <div class="project-card group rounded-3xl overflow-hidden glass p-6 transition-all duration-500 hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100">
-                        <div class="h-48 mb-6 rounded-2xl bg-gradient-to-br from-cyan-900/50 to-cyan-700/50 flex items-center justify-center border border-white/5">
-                            <i class="fas fa-shopping-bag text-5xl text-cyan-400/80 group-hover:scale-110 transition duration-500"></i>
+                    <div class="px-4">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 border border-white/10 rounded-full">Web App</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-white text-onyx rounded-full">Vercel Live</span>
                         </div>
-                        <h4 class="text-xl font-bold mb-2">WebBanHang & AppTapHoa</h4>
-                        <p class="text-sm text-slate-400 mb-6">
-                            Hệ thống quản lý bán hàng đa nền tảng. Kết hợp Web (Next.js) và Android (Java) giúp tối ưu hóa quy trình kinh doanh.
-                        </p>
-                        <div class="flex gap-2 text-[10px] text-cyan-400 italic">
-                            <span class="flex items-center gap-1"><i class="fas fa-robot"></i> Code structure optimized with AI</span>
-                        </div>
+                        <h4 class="text-3xl font-display font-bold mb-4">Học Trắc Nghiệm Platform</h4>
+                        <p class="text-white/40 font-light mb-6">Nền tảng thi và ôn tập hiện đại được tối ưu hóa toàn diện bằng AI. Trải nghiệm người dùng mượt mà với TypeScript và hiệu năng phản hồi tức thì.</p>
                     </div>
-
-                    <!-- Project: QuanLyDien -->
-                    <div class="project-card group rounded-3xl overflow-hidden glass p-6 transition-all duration-500 hover:-translate-y-2" data-aos="fade-up" data-aos-delay="200">
-                        <div class="h-48 mb-6 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center border border-white/5">
-                            <i class="fas fa-file-invoice-dollar text-5xl text-slate-500 group-hover:scale-110 transition duration-500"></i>
-                        </div>
-                        <h4 class="text-xl font-bold mb-2">QuanLyDien</h4>
-                        <p class="text-sm text-slate-400 mb-6">
-                            Giải pháp quản lý hóa đơn điện WinForms mạnh mẽ. Thuật toán tính giá điện bậc thang chuẩn hóa.
-                        </p>
-                        <div class="flex gap-2 text-[10px] text-slate-500 italic">
-                            <span class="flex items-center gap-1"><i class="fas fa-microchip"></i> Robust C# Logic</span>
-                        </div>
-                    </div>
-
-                    <!-- Project: QuanLyKhachSan -->
-                    <div class="project-card group rounded-3xl overflow-hidden glass p-6 transition-all duration-500 hover:-translate-y-2" data-aos="fade-up" data-aos-delay="300">
-                        <div class="h-48 mb-6 rounded-2xl bg-slate-800/40 flex items-center justify-center border border-white/5">
-                            <i class="fas fa-h-square text-5xl text-slate-600 group-hover:rotate-12 transition duration-500"></i>
-                        </div>
-                        <h4 class="text-xl font-bold mb-2">QuanLyKhachSan</h4>
-                        <p class="text-sm text-slate-400 mb-6">
-                            Phần mềm quản lý khách sạn nghiệp vụ cao. Xây dựng bằng Java với kiến trúc hướng đối tượng (OOP) chặt chẽ.
-                        </p>
-                        <div class="flex gap-2 text-[10px] text-slate-600 italic">
-                            <span class="flex items-center gap-1"><i class="fas fa-shield-alt"></i> Secure Data Handling</span>
-                        </div>
-                    </div>
-
-                    <!-- Project: QuanLyChiTieuCaNhan -->
-                    <div class="project-card group rounded-3xl overflow-hidden glass p-6 transition-all duration-500 hover:-translate-y-2" data-aos="fade-up" data-aos-delay="400">
-                        <div class="h-48 mb-6 rounded-2xl bg-gradient-to-br from-emerald-900/50 to-emerald-700/50 flex items-center justify-center border border-white/5">
-                            <i class="fas fa-wallet text-5xl text-emerald-400/80 group-hover:scale-110 transition duration-500"></i>
-                        </div>
-                        <h4 class="text-xl font-bold mb-2">QuanLyChiTieu</h4>
-                        <p class="text-sm text-slate-400 mb-6">
-                            Ứng dụng quản lý tài chính cá nhân. Thiết kế UI tinh gọn giúp người dùng dễ dàng theo dõi thu chi.
-                        </p>
-                        <div class="flex gap-2 text-[10px] text-emerald-500 italic">
-                            <span class="flex items-center gap-1"><i class="fas fa-lightbulb"></i> Inspired by AI Trends</span>
-                        </div>
-                    </div>
-
                 </div>
+
+                <!-- Project: WebBanHang -->
+                <div class="group cursor-pointer" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aspect-video bg-white/5 rounded-[3rem] overflow-hidden border border-white/5 relative mb-8">
+                        <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent"></div>
+                        <div class="absolute inset-0 flex items-center justify-center translate-y-10 group-hover:translate-y-0 transition duration-700">
+                            <i class="fas fa-shopping-basket text-[80px] text-white/5 group-hover:text-white/20 transition"></i>
+                        </div>
+                    </div>
+                    <div class="px-4">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 border border-white/10 rounded-full">Fullstack</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 border border-white/10 rounded-full">Mobile</span>
+                        </div>
+                        <h4 class="text-3xl font-display font-bold mb-4">WebBanHang & AppTapHoa</h4>
+                        <p class="text-white/40 font-light mb-6">Hệ sinh thái thương mại nội bộ. Kết hợp hoàn hảo giữa ứng dụng Web Next.js và app Android Native bằng Java.</p>
+                    </div>
+                </div>
+
             </div>
         </section>
 
-        <!-- Academic & Document Section -->
-        <section id="academics" class="py-32 px-6">
-            <div class="max-w-5xl mx-auto rounded-[40px] glass p-10 md:p-20 relative overflow-hidden bg-mesh border-indigo-500/20" data-aos="fade-up">
-                <div class="relative z-10 flex flex-col md:flex-row items-center gap-12 text-center md:text-left">
-                    <div class="flex-1">
-                        <h3 class="text-accent font-bold uppercase tracking-widest text-xs mb-4">Lộ trình rèn luyện</h3>
-                        <h2 class="text-4xl md:text-5xl font-outfit font-extrabold mb-6 leading-tight">Bài Tập & <br>Tài Liệu Học Tập</h2>
-                        <p class="text-slate-400 text-lg leading-relaxed mb-8">
-                            Nơi lưu trữ tất cả các bài tập thực hành, đồ án môn học và tài liệu nghiên cứu của tôi tại trường.
-                        </p>
-                        <a href="https://drive.google.com/drive/folders/1mPhgtDbjwmRJcvlz6LyaprOLKPolQJiK?usp=sharing" target="_blank" class="inline-flex items-center gap-3 bg-white text-dark px-10 py-5 rounded-full font-bold text-lg hover:bg-slate-200 transition shadow-2xl shadow-white/10 group">
-                            <i class="fab fa-google-drive group-hover:rotate-12 transition"></i> Xem Ngay Tài Liệu
-                        </a>
-                    </div>
-                    <div class="w-full md:w-1/3 flex justify-center">
-                        <div class="w-40 h-40 bg-white/5 rounded-full flex items-center justify-center animate-pulse-slow">
-                            <i class="fas fa-folder-open text-6xl text-white/20"></i>
-                        </div>
-                    </div>
+        <!-- CTA / Footer -->
+        <section class="py-48 px-8 text-center" data-aos="zoom-in">
+            <h3 class="text-white/30 font-bold uppercase tracking-[0.5em] text-xs mb-8">Bắt đầu câu chuyện mới</h3>
+            <h2 class="text-5xl md:text-8xl font-display font-extrabold tracking-tighter mb-12">
+                Hãy cùng nhau <br> kiến tạo <span class="text-white/10 italic">tương lai</span>.
+            </h2>
+            <div class="flex flex-col items-center gap-8">
+                <a href="mailto:contact@hien.dev" class="text-2xl md:text-5xl font-display font-medium border-b-2 border-white/5 pb-4 hover:border-white transition duration-500">
+                    hien10122005@gmail.com
+                </a>
+                <div class="flex gap-12 mt-12 text-white/20 font-bold text-[10px] uppercase tracking-widest">
+                    <a href="https://github.com/hien10122005" target="_blank" class="hover:text-white transition">GitHub Profile</a>
+                    <a href="#" class="hover:text-white transition">Download Resume</a>
+                    <a href="#" class="hover:text-white transition">LinkedIn</a>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="py-20 px-6 border-t border-white/5">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-            <div class="text-center md:text-left">
-                <div class="text-3xl font-outfit font-bold gradient-text mb-4 tracking-tighter">hien.dev</div>
-                <div class="flex justify-center md:justify-start gap-4 mb-6">
-                    <a href="https://github.com/hien10122005" target="_blank" class="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-white/10 transition">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-white/10 transition text-indigo-400">
-                        <i class="fas fa-envelope"></i>
-                    </a>
-                </div>
-                <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">© 2026 Crafted with Antigravity AI.</p>
-            </div>
-            
-            <div class="glass p-8 rounded-3xl max-w-sm border-white/10">
-                <h5 class="text-sm font-bold mb-4 flex items-center gap-2">
-                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Sẵn sàng hợp tác
-                </h5>
-                <p class="text-xs text-slate-400 leading-relaxed mb-6">
-                    Bạn có dự án thú vị? Hãy cùng thảo luận và xây dựng những giải pháp công nghệ đột phá.
-                </p>
-                <div class="flex gap-3">
-                    <button class="bg-indigo-600 px-6 py-2 rounded-xl text-xs font-bold hover:bg-indigo-500 transition">Contact Me</button>
-                    <button class="glass px-6 py-2 rounded-xl text-xs font-bold hover:bg-white/10 transition">Resume</button>
-                </div>
-            </div>
-        </div>
-    </footer>
-
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // Init AOS
-        AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 50
-        });
+        AOS.init({ duration: 1200, once: true });
 
-        // Custom Cursor Logic
-        const dot = document.getElementById('cursor-dot');
-        const glow = document.getElementById('cursor-glow');
+        // Particle System
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-        window.addEventListener('mousemove', (e) => {
-            const { clientX: x, clientY: y } = e;
-            dot.style.transform = `translate(${x}px, ${y}px)`;
-            glow.style.transform = `translate(${x - 16}px, ${y - 16}px)`;
-        });
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
 
-        // Navbar Scroll Effect
-        const nav = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                nav.style.padding = '0.75rem 1.5rem';
-                nav.classList.add('shadow-2xl');
-            } else {
-                nav.style.padding = '1rem 1.5rem';
-                nav.classList.remove('shadow-2xl');
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
             }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.alpha = Math.random() * 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 150; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Custom Cursor & Bento Parallax
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
+            
+            document.querySelectorAll('.bento-item').forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                item.style.setProperty('--cursor-x', `${x}px`);
+                item.style.setProperty('--cursor-y', `${y}px`);
+            });
         });
 
-        console.log("%c Portfolio Upgrade V2 %c Ready ", "color:white; background:#6366f1; padding:4px 0", "color:#6366f1; background:white; padding:4px 0");
+        // Hover Effect on Cursor
+        document.querySelectorAll('a, button, .bento-item, .group').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.style.transform += ' scale(3)');
+            el.addEventListener('mouseleave', () => cursor.style.transform = cursor.style.transform.replace(' scale(3)', ''));
+        });
     </script>
 </body>
 </html>
